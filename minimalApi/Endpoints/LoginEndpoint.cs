@@ -12,13 +12,11 @@ public static class LoginEndpoint
             var userDto = userService.GetUser(userModel.UserName, userModel.Password);
             if (userDto == null)
             {
-                response.StatusCode = 401;
-                return;
+                return Results.Unauthorized();
             }
 
             var token = tokenService.BuildToken(builder.Configuration["Jwt:Key"], builder.Configuration["Jwt:Issuer"], builder.Configuration["Jwt:Audience"], userDto);
-            await response.WriteAsJsonAsync(new { token = token });
-            return;
+            return Results.Ok( new { token = token} );
         })
         .Produces(StatusCodes.Status200OK);
     }
